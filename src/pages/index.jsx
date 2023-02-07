@@ -1,6 +1,8 @@
 import Seo from '@/components/Seo';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+// import { useEffect, useState } from 'react';
 
 export default function Home({ results }) {
   // // # Client Side Rendering
@@ -12,6 +14,18 @@ export default function Home({ results }) {
   //     // console.log(results);
   //   })();
   // }, []);
+  const router = useRouter();
+  const onClick = (id, title) => {
+    router.push(
+      {
+        pathname: `/movies/${id}`,
+        query: {
+          title,
+        },
+      },
+      `/movies/${id}`
+    );
+  };
 
   return (
     <div className="container">
@@ -20,6 +34,7 @@ export default function Home({ results }) {
       {!results && <h4>Loading...</h4>}
       {results?.map((movie) => (
         <div
+          onClick={() => onClick(movie.id, movie.original_title)}
           className="movie"
           key={movie.id}>
           <Image
