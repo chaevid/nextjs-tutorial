@@ -1,16 +1,65 @@
 import Seo from '@/components/Seo';
-import Head from 'next/head';
-import { useState } from 'react';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
-  const [counter, setCounter] = useState(0);
-  return (
-    <div>
-      <Seo title="Home"></Seo>
+  const [movies, setMovies] = useState();
+  useEffect(() => {
+    (async () => {
+      const { results } = await (await fetch(`/api/movies`)).json();
+      setMovies(results);
+      // console.log(results);
+      // console.log(results[1]);
+      // console.log(results);
 
-      <h1>Hello {counter}</h1>
-      <button onClick={() => setCounter((prev) => prev + 1)}>+</button>
-      <button onClick={() => setCounter((prev) => prev - 1)}>-</button>
+      // console.log(setMovies);
+
+      //
+      // console.log(`setMovies : ${setMovies.name}`);
+      // // console.log(data );
+    })();
+  }, []);
+  console.log(movies);
+
+  return (
+    <div className="container">
+      <Seo title="Home" />
+      {/* <h1>Hello! NextJS </h1> */}
+      {!movies && <h4>Loading...</h4>}
+      {movies?.map((movie) => (
+        <div
+          className="movie"
+          key={movie.id}>
+          <Image
+            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+            alt="poster"
+            width="100"
+            height={100}
+          />
+          <h4>{movie.original_title}</h4>
+        </div>
+      ))}
+      <style jsx>{`
+        .container {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          padding: 20px;
+          gap: 20px;
+        }
+        .movie {
+          max-width: 100%;
+          border-radius: 12px;
+          transition: transform 0.2s ease-in-out;
+          box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+        }
+        .movie:hover {
+          transform: scale(1.05) translateY(-10px);
+        }
+        .movie h4 {
+          font-size: 18px;
+          text-align: center;
+        }
+      `}</style>
     </div>
   );
 }
