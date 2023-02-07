@@ -2,31 +2,23 @@ import Seo from '@/components/Seo';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
-export default function Home() {
-  const [movies, setMovies] = useState();
-  useEffect(() => {
-    (async () => {
-      const { results } = await (await fetch(`/api/movies`)).json();
-      setMovies(results);
-      // console.log(results);
-      // console.log(results[1]);
-      // console.log(results);
-
-      // console.log(setMovies);
-
-      //
-      // console.log(`setMovies : ${setMovies.name}`);
-      // // console.log(data );
-    })();
-  }, []);
-  console.log(movies);
+export default function Home({ results }) {
+  // // # Client Side Rendering
+  // const [movies, setMovies] = useState();
+  // useEffect(() => {
+  //   (async () => {
+  //     const { results } = await (await fetch(`/api/movies`)).json();
+  //     setMovies(results);
+  //     // console.log(results);
+  //   })();
+  // }, []);
 
   return (
     <div className="container">
       <Seo title="Home" />
       {/* <h1>Hello! NextJS </h1> */}
-      {!movies && <h4>Loading...</h4>}
-      {movies?.map((movie) => (
+      {!results && <h4>Loading...</h4>}
+      {results?.map((movie) => (
         <div
           className="movie"
           key={movie.id}>
@@ -47,6 +39,7 @@ export default function Home() {
           gap: 20px;
         }
         .movie {
+          cursor: pointer;
           max-width: 100%;
           border-radius: 12px;
           transition: transform 0.2s ease-in-out;
@@ -62,4 +55,17 @@ export default function Home() {
       `}</style>
     </div>
   );
+}
+
+// # Server Side Rendering
+
+export async function getServerSideProps() {
+  const { results } = await (
+    await fetch(`http://localhost:3000//api/movies`)
+  ).json();
+  return {
+    props: {
+      results,
+    },
+  };
 }
