@@ -5,26 +5,9 @@ import { useRouter } from 'next/router';
 // import { useEffect, useState } from 'react';
 
 export default function Home({ results }) {
-  // // # Client Side Rendering
-  // const [movies, setMovies] = useState();
-  // useEffect(() => {
-  //   (async () => {
-  //     const { results } = await (await fetch(`/api/movies`)).json();
-  //     setMovies(results);
-  //     // console.log(results);
-  //   })();
-  // }, []);
   const router = useRouter();
   const onClick = (id, title) => {
-    router.push(
-      {
-        pathname: `/movies/${id}`,
-        query: {
-          title,
-        },
-      },
-      `/movies/${id}`
-    );
+    router.push(`/movies/${title}/${id}`);
   };
 
   return (
@@ -43,7 +26,11 @@ export default function Home({ results }) {
             width="100"
             height={100}
           />
-          <h4>{movie.original_title}</h4>
+          <h4>
+            <Link href={`/movies/${movie.original_title}/${movie.id}`}>
+              {movie.original_title}
+            </Link>
+          </h4>{' '}
         </div>
       ))}
       <style jsx>{`
@@ -53,14 +40,16 @@ export default function Home({ results }) {
           padding: 20px;
           gap: 20px;
         }
-        .movie {
+        /* .movie {
           cursor: pointer;
+        } */
+        .movie img {
           max-width: 100%;
           border-radius: 12px;
           transition: transform 0.2s ease-in-out;
           box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
         }
-        .movie:hover {
+        .movie:hover img {
           transform: scale(1.05) translateY(-10px);
         }
         .movie h4 {
